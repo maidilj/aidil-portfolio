@@ -1,0 +1,436 @@
+{% extends "base.html" %}
+{% block title %}Muhammad Aidil | Research Scientist{% endblock %}
+
+{% block head %}
+<style>
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 0 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 80% 50%, rgba(232,83,42,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(240,165,0,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-grid-overlay {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block; width: 40px; height: 1px;
+    background: var(--accent);
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 400;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-summary {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+  }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .hero-visual {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 1.5rem;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    min-width: 220px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeSlideIn 0.6s ease both;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent);
+  }
+  .stat-card:nth-child(2) { margin-right: 2rem; }
+  .stat-card:nth-child(2)::before { background: var(--accent2); }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .stat-card:nth-child(1) { animation-delay: 0.2s; }
+  .stat-card:nth-child(2) { animation-delay: 0.4s; }
+  .stat-card:nth-child(3) { animation-delay: 0.6s; }
+
+  /* ── ABOUT ── */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+    border-top: 1px solid var(--border);
+  }
+  .about-text p { color: var(--muted); margin-bottom: 1.2rem; font-size: 0.95rem; }
+  .timeline { margin-top: 2rem; }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .timeline-year {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    padding-top: 0.2rem;
+  }
+  .timeline-role { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .timeline-org { color: var(--muted); font-size: 0.8rem; margin-bottom: 0.5rem; }
+  .timeline-desc { color: var(--muted); font-size: 0.8rem; line-height: 1.6; }
+
+  /* ── SKILLS ── */
+  #skills { border-top: 1px solid var(--border); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .skill-group {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    transition: border-color 0.2s;
+  }
+  .skill-group:hover { border-color: var(--accent); }
+  .skill-group-title {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .skill-group-title::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: var(--border);
+  }
+  .skill-list { list-style: none; }
+  .skill-list li {
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .skill-list li:last-child { border-bottom: none; }
+  .skill-list li span { color: var(--text); font-weight: 500; }
+
+  /* ── PROJECTS ── */
+  #projects { border-top: 1px solid var(--border); }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    text-decoration: none;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+  .project-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+  .project-card::after {
+    content: '↗';
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    font-size: 1.2rem;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .project-card:hover::after { color: var(--accent); }
+  .project-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+  }
+  .project-card h3 {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+  .project-card p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  /* ── CONTACT ── */
+  #contact {
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  #contact h2 { margin-bottom: 0.75rem; }
+  #contact .subtitle { color: var(--muted); margin-bottom: 2.5rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .contact-links { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; padding: 4rem 1.5rem; min-height: auto; padding-top: 6rem; }
+    .hero-visual { align-items: flex-start; }
+    #about { grid-template-columns: 1fr; gap: 2rem; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Research Scientist</div>
+    <h1>Measurement,<br>Modelling &amp;<br><em>Forensic Science</em></h1>
+    <p class="hero-summary">
+      5+ years developing novel measurement methods, computational models,
+      and sensor systems across materials science and consumer research.
+      Pursuing applied research in fire &amp; explosion forensics.
+    </p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="stat-card">
+      <div class="stat-num">9+</div>
+      <div class="stat-label">Method Protocols Developed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">Global Consumer Studies</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">$150k</div>
+      <div class="stat-label">Open Innovation Managed</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-text">
+    <p class="section-label">About</p>
+    <h2>From Materials<br>to <em>Measurement</em></h2>
+    <p>
+      I am a Singapore-based research scientist with a background spanning
+      thermo-electrical simulation, sensor device development, and
+      data-driven method development in both academic and industry settings.
+    </p>
+    <p>
+      My work at P&amp;G and HP-NTU Corporate Lab has given me hands-on
+      experience bridging physical experimentation with computational
+      modelling — building systems that turn raw sensor data into
+      actionable scientific insight.
+    </p>
+    <p>
+      I am now seeking to apply this foundation to forensic physics and
+      engineering, with a particular interest in fire science, combustion
+      dynamics, and evidence-based investigative methods.
+    </p>
+  </div>
+  <div>
+    <p class="section-label">Experience</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2021 – 2025</div>
+        <div>
+          <div class="timeline-role">Associate Scientist</div>
+          <div class="timeline-org">Procter &amp; Gamble International Operations</div>
+          <div class="timeline-desc">Product performance lab methods, sensor devices, predictive modelling, and data automation across global Hair Care brands.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2019 – 2020</div>
+        <div>
+          <div class="timeline-role">Research Associate</div>
+          <div class="timeline-org">HP-NTU Corporate Lab, Bioinspired Functional Materials</div>
+          <div class="timeline-desc">Thermo-electric composite design, FE modelling in ABAQUS, and patent contribution for heat-enabled material platforms.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2014 – 2019</div>
+        <div>
+          <div class="timeline-role">B.Eng Aerospace Engineering + M.S. Biomedical Engineering</div>
+          <div class="timeline-org">Nanyang Technological University</div>
+          <div class="timeline-desc">Nanyang Scholar. Exchange at TU Delft. Published 3 co-authored papers in additive manufacturing and biomedical engineering.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="section-label">Competencies</p>
+  <h2>Technical Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-group">
+      <div class="skill-group-title">Modelling &amp; Simulation</div>
+      <ul class="skill-list">
+        <li><span>ABAQUS / FEM</span> Proficient</li>
+        <li><span>Thermo-Electric Modelling</span> Proficient</li>
+        <li><span>MATLAB</span> Proficient</li>
+        <li><span>Ansys Fluent / CFD</span> Familiar</li>
+        <li><span>SolidWorks / Rhino</span> Proficient</li>
+      </ul>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Data Science &amp; Analytics</div>
+      <ul class="skill-list">
+        <li><span>Python</span> Proficient</li>
+        <li><span>Machine Learning</span> Familiar</li>
+        <li><span>Statistical Analysis (JMP, R)</span> Proficient</li>
+        <li><span>Predictive Modelling</span> Familiar</li>
+        <li><span>SQL</span> Novice</li>
+      </ul>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Research &amp; Engineering</div>
+      <ul class="skill-list">
+        <li><span>FMEA</span> Proficient</li>
+        <li><span>Method Development &amp; Validation</span> Proficient</li>
+        <li><span>Rapid Prototyping / Arduino</span> Proficient</li>
+        <li><span>Regulatory Compliance</span> Familiar</li>
+        <li><span>Lab Operations &amp; QA</span> Proficient</li>
+      </ul>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Infrastructure</div>
+      <ul class="skill-list">
+        <li><span>Docker</span> Beginner</li>
+        <li><span>AWS EC2</span> Beginner</li>
+        <li><span>Flask</span> Beginner</li>
+        <li><span>Git / GitHub</span> Novice</li>
+        <li><span>Process Automation</span> Proficient</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label">Work</p>
+  <h2>Featured Projects</h2>
+  <div class="projects-grid">
+    <a href="/project/fire-dashboard" class="project-card">
+      <div class="project-num">01 — Data Analytics</div>
+      <h3>Fire Incident Analytics Dashboard</h3>
+      <p>
+        Interactive visualisation of fire incident patterns — by type,
+        time of day, monthly trend, and response time distribution.
+        Built to demonstrate applied data analytics in a forensic fire
+        science context using Python and Plotly.
+      </p>
+      <div class="project-tags">
+        <span class="tag accent">Python</span>
+        <span class="tag">Plotly</span>
+        <span class="tag">Flask</span>
+        <span class="tag">Data Analytics</span>
+      </div>
+    </a>
+    <a href="/project/thermal-simulation" class="project-card">
+      <div class="project-num">02 — Computational Modelling</div>
+      <h3>Thermo-Electric FE Simulation Case Study</h3>
+      <p>
+        A documented case study from HP-NTU research: finite element
+        modelling of heat-enabled composite materials in ABAQUS,
+        integrating thermal imaging and current-voltage validation
+        data across 30+ prototypes.
+      </p>
+      <div class="project-tags">
+        <span class="tag accent">ABAQUS</span>
+        <span class="tag">FEM</span>
+        <span class="tag">Thermal Modelling</span>
+        <span class="tag amber">Patent Filed</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label">Contact</p>
+  <h2>Let's Connect</h2>
+  <p class="subtitle">
+    Open to research and scientist roles in forensic science,
+    computational modelling, and applied physics. Based in Singapore.
+  </p>
+  <div class="contact-links">
+    <a href="mailto:m.aidil.juhari@gmail.com" class="btn btn-primary">m.aidil.juhari@gmail.com</a>
+    <a href="https://www.linkedin.com/in/maidilj" target="_blank" class="btn btn-outline">LinkedIn ↗</a>
+  </div>
+</section>
+
+{% endblock %}

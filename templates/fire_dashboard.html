@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% block title %}Fire Incident Dashboard | Aidil{% endblock %}
+
+{% block head %}
+<script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+<style>
+  .dash-hero {
+    padding: 5rem 4rem 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .back-link {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 2rem;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--text); }
+  .dash-hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 400;
+    margin-bottom: 1rem;
+  }
+  .dash-hero p { color: var(--muted); max-width: 620px; line-height: 1.8; }
+
+  /* Summary cards */
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin: 3rem 4rem;
+  }
+  .summary-card {
+    background: var(--surface);
+    padding: 2rem;
+    text-align: center;
+  }
+  .summary-num {
+    font-family: var(--serif);
+    font-size: 2.2rem;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .summary-num.accent { color: var(--accent); }
+  .summary-num.amber  { color: var(--accent2); }
+  .summary-lbl {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Charts */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 0 4rem 4rem;
+  }
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+  }
+  .chart-card.wide { grid-column: 1 / -1; }
+  .chart-title {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .chart-container { width: 100%; height: 320px; }
+
+  .methodology {
+    margin: 0 4rem 4rem;
+    padding: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+  }
+  .methodology h3 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .methodology p { color: var(--muted); font-size: 0.85rem; line-height: 1.8; }
+
+  @media (max-width: 768px) {
+    .dash-hero, .summary-row, .charts-grid, .methodology { margin-left: 1.5rem; margin-right: 1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
+    .charts-grid { grid-template-columns: 1fr; }
+    .chart-card.wide { grid-column: auto; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-hero">
+  <a href="/" class="back-link">← Back</a>
+  <p class="section-label">Project 01 — Data Analytics</p>
+  <h1>Fire Incident<br>Analytics Dashboard</h1>
+  <p>
+    Exploratory data analysis of fire incident patterns using synthetic data
+    modelled on public fire brigade datasets. Demonstrates applied analytics
+    relevant to forensic fire investigation: understanding incident frequency,
+    temporal patterns, and response effectiveness.
+  </p>
+  <div style="margin-top:1.5rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+    <span class="tag accent">Python</span>
+    <span class="tag">Plotly.js</span>
+    <span class="tag">Flask</span>
+    <span class="tag">Data Analytics</span>
+    <span class="tag">Fire Science</span>
+  </div>
+</div>
+
+<div class="summary-row">
+  <div class="summary-card">
+    <div class="summary-num">{{ summary.total_incidents }}</div>
+    <div class="summary-lbl">Total Incidents</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-num accent">{{ summary.electrical_fires }}</div>
+    <div class="summary-lbl">Electrical Fires</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-num amber">{{ summary.explosions }}</div>
+    <div class="summary-lbl">Explosions</div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-num">{{ summary.avg_response_min }} min</div>
+    <div class="summary-lbl">Avg Response Time</div>
+  </div>
+</div>
+
+<div class="charts-grid">
+  <div class="chart-card">
+    <div class="chart-title">Incidents by Type</div>
+    <div class="chart-container" id="chart-type"></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Response Time Distribution</div>
+    <div class="chart-container" id="chart-response"></div>
+  </div>
+  <div class="chart-card wide">
+    <div class="chart-title">Monthly Incident Trend (12 months)</div>
+    <div class="chart-container" id="chart-monthly"></div>
+  </div>
+  <div class="chart-card wide">
+    <div class="chart-title">Incidents by Hour of Day</div>
+    <div class="chart-container" id="chart-hourly"></div>
+  </div>
+</div>
+
+<div class="methodology">
+  <h3>Methodology Note</h3>
+  <p>
+    Data is synthetically generated to mirror the distributions observed in public fire brigade open datasets
+    (e.g. London Fire Brigade incident records). The purpose is to demonstrate analytical capability:
+    identifying temporal peaks, high-risk incident categories, and response time performance — the same
+    analytical lens applied in forensic fire investigation to identify patterns, anomalies, and causal factors.
+    In a live deployment, this pipeline would ingest real incident logs via SQL or CSV, with automated
+    anomaly flagging for unusual clusters of electrical or explosion incidents.
+  </p>
+</div>
+
+<script>
+  const plotlyConfig = { responsive: true, displayModeBar: false };
+  const darkLayout = {
+    paper_bgcolor: 'transparent',
+    plot_bgcolor:  'transparent',
+    font: { family: 'DM Sans, sans-serif', color: '#64748b', size: 11 },
+    margin: { t: 10, r: 10, b: 50, l: 50 },
+    xaxis: { gridcolor: '#1e2535', linecolor: '#1e2535', tickcolor: '#1e2535' },
+    yaxis: { gridcolor: '#1e2535', linecolor: '#1e2535', tickcolor: '#1e2535' },
+    colorway: ['#e8532a','#f0a500','#3b82f6','#10b981','#8b5cf6','#ec4899','#06b6d4','#84cc16']
+  };
+
+  fetch('/api/fire-data').then(r => r.json()).then(data => {
+
+    // Chart 1 — by type (horizontal bar)
+    const types = Object.keys(data.by_type);
+    const counts = Object.values(data.by_type);
+    const sorted = types.map((t,i) => ({t, c: counts[i]})).sort((a,b) => b.c - a.c);
+    Plotly.newPlot('chart-type', [{
+      type: 'bar', orientation: 'h',
+      x: sorted.map(d => d.c),
+      y: sorted.map(d => d.t),
+      marker: { color: sorted.map((d,i) => i === 0 ? '#e8532a' : '#1e2535') }
+    }], { ...darkLayout, margin: { t: 10, r: 20, b: 40, l: 120 } }, plotlyConfig);
+
+    // Chart 2 — response time (bar)
+    Plotly.newPlot('chart-response', [{
+      type: 'bar',
+      x: data.response.bins,
+      y: data.response.counts,
+      marker: { color: ['#10b981','#3b82f6','#f0a500','#e8532a','#ef4444'] }
+    }], darkLayout, plotlyConfig);
+
+    // Chart 3 — monthly trend (line)
+    Plotly.newPlot('chart-monthly', [{
+      type: 'scatter', mode: 'lines+markers',
+      x: Object.keys(data.monthly),
+      y: Object.values(data.monthly),
+      line: { color: '#e8532a', width: 2 },
+      marker: { color: '#e8532a', size: 6 },
+      fill: 'tozeroy',
+      fillcolor: 'rgba(232,83,42,0.08)'
+    }], darkLayout, plotlyConfig);
+
+    // Chart 4 — hourly (bar)
+    Plotly.newPlot('chart-hourly', [{
+      type: 'bar',
+      x: Object.keys(data.hourly),
+      y: Object.values(data.hourly),
+      marker: {
+        color: Object.values(data.hourly).map(v =>
+          v > 60 ? '#e8532a' : v > 40 ? '#f0a500' : '#1e2535'
+        )
+      }
+    }], { ...darkLayout, margin: { t: 10, r: 10, b: 60, l: 50 } }, plotlyConfig);
+
+  });
+</script>
+{% endblock %}
