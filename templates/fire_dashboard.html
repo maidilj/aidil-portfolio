@@ -9,29 +9,23 @@
     border-bottom: 1px solid var(--border);
   }
   .back-link {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-family: var(--mono); font-size: 0.75rem; color: var(--muted);
+    text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase;
     display: inline-flex; align-items: center; gap: 0.5rem;
-    margin-bottom: 2rem;
-    transition: color 0.2s;
+    margin-bottom: 2rem; transition: color 0.2s;
   }
   .back-link:hover { color: var(--text); }
   .dash-hero h1 {
     font-family: var(--serif);
     font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 400;
-    margin-bottom: 1rem;
+    font-weight: 400; margin-bottom: 1rem;
   }
   .dash-hero p { color: var(--muted); max-width: 620px; line-height: 1.8; }
 
   /* Summary cards */
   .summary-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
@@ -41,29 +35,40 @@
     background: var(--surface);
     padding: 2rem;
     text-align: center;
+    position: relative;
   }
+  .summary-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--border);
+  }
+  .summary-card.red::before   { background: var(--accent); }
+  .summary-card.amber::before { background: var(--accent2); }
+  .summary-card.blue::before  { background: #3b82f6; }
+  .summary-card.green::before { background: #10b981; }
   .summary-num {
     font-family: var(--serif);
-    font-size: 2.2rem;
-    color: var(--text);
-    margin-bottom: 0.25rem;
+    font-size: 2.4rem; color: var(--text);
+    line-height: 1; margin-bottom: 0.25rem;
   }
-  .summary-num.accent { color: var(--accent); }
-  .summary-num.amber  { color: var(--accent2); }
+  .summary-num.red   { color: var(--accent); }
+  .summary-num.amber { color: var(--accent2); }
   .summary-lbl {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-family: var(--mono); font-size: 0.65rem;
+    color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
   }
+  .summary-delta {
+    font-family: var(--mono); font-size: 0.7rem;
+    margin-top: 0.4rem;
+  }
+  .summary-delta.up   { color: var(--accent); }
+  .summary-delta.down { color: #10b981; }
 
   /* Charts */
   .charts-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
-    padding: 0 4rem 4rem;
+    padding: 0 4rem 2rem;
   }
   .chart-card {
     background: var(--surface);
@@ -71,167 +76,283 @@
     padding: 2rem;
   }
   .chart-card.wide { grid-column: 1 / -1; }
-  .chart-title {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--accent);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
+  .chart-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 1.5rem; gap: 1rem;
   }
-  .chart-container { width: 100%; height: 320px; }
+  .chart-title {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .chart-subtitle {
+    font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.5;
+  }
 
-  .methodology {
+  /* Year filter for pie */
+  .year-filter { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .year-btn {
+    font-family: var(--mono); font-size: 0.65rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border);
+    background: transparent; color: var(--muted);
+    cursor: pointer; letter-spacing: 0.08em;
+    transition: all 0.15s;
+  }
+  .year-btn:hover  { border-color: var(--text); color: var(--text); }
+  .year-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,83,42,0.08); }
+
+  .chart-container { width: 100%; height: 340px; }
+
+  /* Source note */
+  .source-note {
     margin: 0 4rem 4rem;
-    padding: 2rem;
+    padding: 1.25rem 1.5rem;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
+    border-left: 3px solid var(--muted);
   }
-  .methodology h3 {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--accent);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
+  .source-note p {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--muted); line-height: 1.7;
   }
-  .methodology p { color: var(--muted); font-size: 0.85rem; line-height: 1.8; }
 
-  @media (max-width: 768px) {
-    .dash-hero, .summary-row, .charts-grid, .methodology { margin-left: 1.5rem; margin-right: 1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
-    .charts-grid { grid-template-columns: 1fr; }
+  @media (max-width: 900px) {
+    .dash-hero { padding: 4rem 1.5rem 2rem; }
+    .summary-row { grid-template-columns: repeat(2, 1fr); margin: 2rem 1.5rem; }
+    .charts-grid { grid-template-columns: 1fr; padding: 0 1.5rem 2rem; }
     .chart-card.wide { grid-column: auto; }
+    .source-note { margin: 0 1.5rem 3rem; }
   }
 </style>
 {% endblock %}
 
 {% block content %}
+
 <div class="dash-hero">
   <a href="/" class="back-link">← Back</a>
   <p class="section-label">Project 01 — Data Analytics</p>
-  <h1>Fire Incident<br>Analytics Dashboard</h1>
+  <h1>Singapore Fire<br>Incident Dashboard</h1>
   <p>
-    Exploratory data analysis of fire incident patterns using synthetic data
-    modelled on public fire brigade datasets. Demonstrates applied analytics
-    relevant to forensic fire investigation: understanding incident frequency,
-    temporal patterns, and response effectiveness.
+    Analysis of SCDF fire statistics from 2021 to 2025, covering incident trends
+    by building type and a focused view on Active Mobility Device (AMD) fires —
+    including Personal Mobility Devices (PMDs), Power-Assisted Bicycles (PABs),
+    and Personal Mobility Aids (PMAs).
   </p>
   <div style="margin-top:1.5rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
     <span class="tag accent">Python</span>
     <span class="tag">Plotly.js</span>
     <span class="tag">Flask</span>
-    <span class="tag">Data Analytics</span>
+    <span class="tag">SCDF Data</span>
     <span class="tag">Fire Science</span>
   </div>
 </div>
 
+<!-- Summary cards -->
 <div class="summary-row">
-  <div class="summary-card">
-    <div class="summary-num">{{ summary.total_incidents }}</div>
-    <div class="summary-lbl">Total Incidents</div>
+  <div class="summary-card red">
+    <div class="summary-num">{{ summary.total | int }}</div>
+    <div class="summary-lbl">Total Fires ({{ summary.latest_year }})</div>
+    {% if summary.total_change > 0 %}
+      <div class="summary-delta up">▲ {{ summary.total_change }} vs prior year</div>
+    {% else %}
+      <div class="summary-delta down">▼ {{ summary.total_change | abs }} vs prior year</div>
+    {% endif %}
   </div>
-  <div class="summary-card">
-    <div class="summary-num accent">{{ summary.electrical_fires }}</div>
-    <div class="summary-lbl">Electrical Fires</div>
+  <div class="summary-card amber">
+    <div class="summary-num amber">{{ summary.total_amd }}</div>
+    <div class="summary-lbl">AMD Fires ({{ summary.latest_year }})</div>
+    {% if summary.amd_change > 0 %}
+      <div class="summary-delta up">▲ {{ summary.amd_change }} vs prior year</div>
+    {% else %}
+      <div class="summary-delta down">▼ {{ summary.amd_change | abs }} vs prior year</div>
+    {% endif %}
   </div>
-  <div class="summary-card">
-    <div class="summary-num amber">{{ summary.explosions }}</div>
-    <div class="summary-lbl">Explosions</div>
+  <div class="summary-card blue">
+    <div class="summary-num">{{ summary.injuries }}</div>
+    <div class="summary-lbl">Injuries ({{ summary.latest_year }})</div>
   </div>
-  <div class="summary-card">
-    <div class="summary-num">{{ summary.avg_response_min }} min</div>
-    <div class="summary-lbl">Avg Response Time</div>
+  <div class="summary-card green">
+    <div class="summary-num">{{ summary.fatalities }}</div>
+    <div class="summary-lbl">Fatalities ({{ summary.latest_year }})</div>
   </div>
 </div>
 
 <div class="charts-grid">
-  <div class="chart-card">
-    <div class="chart-title">Incidents by Type</div>
-    <div class="chart-container" id="chart-type"></div>
-  </div>
-  <div class="chart-card">
-    <div class="chart-title">Response Time Distribution</div>
-    <div class="chart-container" id="chart-response"></div>
-  </div>
+
+  <!-- Chart A: Overview 2021–2025 -->
   <div class="chart-card wide">
-    <div class="chart-title">Monthly Incident Trend (12 months)</div>
-    <div class="chart-container" id="chart-monthly"></div>
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">A — Total Fire Incidents Overview (2021–2025)</div>
+        <div class="chart-subtitle">Annual trend by building category: Residential, Non-Residential, and Non-Building Premises¹</div>
+      </div>
+    </div>
+    <div class="chart-container" id="chart-overview"></div>
   </div>
-  <div class="chart-card wide">
-    <div class="chart-title">Incidents by Hour of Day</div>
-    <div class="chart-container" id="chart-hourly"></div>
+
+  <!-- Chart B: Breakdown pie with year filter -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">B — Fire Breakdown by Category</div>
+        <div class="chart-subtitle">Distribution by premise type — filter by year</div>
+      </div>
+      <div class="year-filter" id="year-filter">
+        <button class="year-btn" data-year="2021">2021</button>
+        <button class="year-btn" data-year="2022">2022</button>
+        <button class="year-btn" data-year="2023">2023</button>
+        <button class="year-btn" data-year="2024">2024</button>
+        <button class="year-btn active" data-year="2025">2025</button>
+      </div>
+    </div>
+    <div class="chart-container" id="chart-pie"></div>
   </div>
+
+  <!-- Chart C: AMD fires -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">C — AMD Fires (2021–2025)</div>
+        <div class="chart-subtitle">Active Mobility Devices: PMDs, PABs, and PMAs broken down annually</div>
+      </div>
+    </div>
+    <div class="chart-container" id="chart-amd"></div>
+  </div>
+
 </div>
 
-<div class="methodology">
-  <h3>Methodology Note</h3>
+<div class="source-note">
   <p>
-    Data is synthetically generated to mirror the distributions observed in public fire brigade open datasets
-    (e.g. London Fire Brigade incident records). The purpose is to demonstrate analytical capability:
-    identifying temporal peaks, high-risk incident categories, and response time performance — the same
-    analytical lens applied in forensic fire investigation to identify patterns, anomalies, and causal factors.
-    In a live deployment, this pipeline would ingest real incident logs via SQL or CSV, with automated
-    anomaly flagging for unusual clusters of electrical or explosion incidents.
+    <strong>Data source:</strong> Singapore Civil Defence Force (SCDF) Fire Statistics, 2021–2025. &nbsp;|&nbsp;
+    ¹ <strong>Non-Building Premises</strong> includes vegetation fires, vehicle fires, and fires in open spaces (e.g. lift lobbies, common corridors). &nbsp;|&nbsp;
+    <strong>AMD</strong> (Active Mobility Devices) comprises Personal Mobility Devices (PMDs), Power-Assisted Bicycles (PABs), and Personal Mobility Aids (PMAs).
   </p>
 </div>
 
 <script>
-  const plotlyConfig = { responsive: true, displayModeBar: false };
-  const darkLayout = {
-    paper_bgcolor: 'transparent',
-    plot_bgcolor:  'transparent',
-    font: { family: 'DM Sans, sans-serif', color: '#64748b', size: 11 },
-    margin: { t: 10, r: 10, b: 50, l: 50 },
-    xaxis: { gridcolor: '#1e2535', linecolor: '#1e2535', tickcolor: '#1e2535' },
-    yaxis: { gridcolor: '#1e2535', linecolor: '#1e2535', tickcolor: '#1e2535' },
-    colorway: ['#e8532a','#f0a500','#3b82f6','#10b981','#8b5cf6','#ec4899','#06b6d4','#84cc16']
-  };
+const cfg = { responsive: true, displayModeBar: false };
+const base = {
+  paper_bgcolor: 'transparent',
+  plot_bgcolor:  'transparent',
+  font: { family: 'DM Sans, sans-serif', color: '#64748b', size: 11 },
+  xaxis: { gridcolor: '#1e2535', linecolor: '#1e2535', tickcolor: '#1e2535' },
+  yaxis: { gridcolor: '#1e2535', linecolor: '#1e2535', tickcolor: '#1e2535' },
+  legend: { orientation: 'h', y: -0.22, font: { color: '#64748b', size: 10 } }
+};
 
-  fetch('/api/fire-data').then(r => r.json()).then(data => {
+fetch('/api/fire-data').then(r => r.json()).then(data => {
 
-    // Chart 1 — by type (horizontal bar)
-    const types = Object.keys(data.by_type);
-    const counts = Object.values(data.by_type);
-    const sorted = types.map((t,i) => ({t, c: counts[i]})).sort((a,b) => b.c - a.c);
-    Plotly.newPlot('chart-type', [{
-      type: 'bar', orientation: 'h',
-      x: sorted.map(d => d.c),
-      y: sorted.map(d => d.t),
-      marker: { color: sorted.map((d,i) => i === 0 ? '#e8532a' : '#1e2535') }
-    }], { ...darkLayout, margin: { t: 10, r: 20, b: 40, l: 120 } }, plotlyConfig);
+  // ── Chart A: Stacked bar + total line ──────────────────────────────────────
+  Plotly.newPlot('chart-overview', [
+    {
+      type: 'bar', name: 'Residential',
+      x: data.overview.years, y: data.overview.residential,
+      marker: { color: '#e8532a' }
+    },
+    {
+      type: 'bar', name: 'Non-Residential',
+      x: data.overview.years, y: data.overview.non_res,
+      marker: { color: '#f0a500' }
+    },
+    {
+      type: 'bar', name: 'Non-Building Premises¹',
+      x: data.overview.years, y: data.overview.non_bldg,
+      marker: { color: '#3b82f6' }
+    },
+    {
+      type: 'scatter', name: 'Total (all fires)', mode: 'lines+markers',
+      x: data.overview.years, y: data.overview.total,
+      yaxis: 'y2',
+      line: { color: '#e2e8f0', width: 2, dash: 'dot' },
+      marker: { color: '#e2e8f0', size: 7 }
+    }
+  ], {
+    ...base,
+    barmode: 'stack',
+    margin: { t: 10, r: 70, b: 70, l: 55 },
+    yaxis:  { ...base.yaxis, title: 'Incidents' },
+    yaxis2: {
+      overlaying: 'y', side: 'right',
+      gridcolor: 'transparent', linecolor: '#1e2535',
+      title: 'Total', tickfont: { color: '#64748b' }
+    }
+  }, cfg);
 
-    // Chart 2 — response time (bar)
-    Plotly.newPlot('chart-response', [{
-      type: 'bar',
-      x: data.response.bins,
-      y: data.response.counts,
-      marker: { color: ['#10b981','#3b82f6','#f0a500','#e8532a','#ef4444'] }
-    }], darkLayout, plotlyConfig);
-
-    // Chart 3 — monthly trend (line)
-    Plotly.newPlot('chart-monthly', [{
-      type: 'scatter', mode: 'lines+markers',
-      x: Object.keys(data.monthly),
-      y: Object.values(data.monthly),
-      line: { color: '#e8532a', width: 2 },
-      marker: { color: '#e8532a', size: 6 },
-      fill: 'tozeroy',
-      fillcolor: 'rgba(232,83,42,0.08)'
-    }], darkLayout, plotlyConfig);
-
-    // Chart 4 — hourly (bar)
-    Plotly.newPlot('chart-hourly', [{
-      type: 'bar',
-      x: Object.keys(data.hourly),
-      y: Object.values(data.hourly),
+  // ── Chart B: Pie with year filter ──────────────────────────────────────────
+  function drawPie(year) {
+    const d = data.breakdown_by_year[year];
+    Plotly.react('chart-pie', [{
+      type: 'pie',
+      labels: d.labels,
+      values: d.values,
+      hole: 0.45,
+      textinfo: 'percent',
+      textfont: { color: '#e2e8f0', size: 11 },
       marker: {
-        color: Object.values(data.hourly).map(v =>
-          v > 60 ? '#e8532a' : v > 40 ? '#f0a500' : '#1e2535'
-        )
-      }
-    }], { ...darkLayout, margin: { t: 10, r: 10, b: 60, l: 50 } }, plotlyConfig);
+        colors: ['#e8532a', '#f0a500', '#3b82f6', '#10b981', '#8b5cf6'],
+        line: { color: '#0a0d12', width: 2 }
+      },
+      hovertemplate: '<b>%{label}</b><br>%{value} fires (%{percent})<extra></extra>'
+    }], {
+      ...base,
+      margin: { t: 20, r: 140, b: 20, l: 20 },
+      annotations: [{
+        text: `<b>${year}</b>`,
+        x: 0.38, y: 0.5, showarrow: false,
+        font: { size: 20, color: '#e2e8f0', family: 'DM Serif Display, Georgia, serif' }
+      }],
+      showlegend: true,
+      legend: { orientation: 'v', x: 0.78, y: 0.5, xanchor: 'left', yanchor: 'middle', font: { color: '#64748b', size: 10 } }
+    }, cfg);
+  }
 
+  drawPie(2025);
+
+  document.querySelectorAll('.year-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      drawPie(parseInt(this.dataset.year));
+    });
   });
+
+  // ── Chart C: AMD stacked bar + total line ──────────────────────────────────
+  Plotly.newPlot('chart-amd', [
+    {
+      type: 'bar', name: 'PMD (Personal Mobility Device)',
+      x: data.amd.years, y: data.amd.pmd,
+      marker: { color: '#e8532a' }
+    },
+    {
+      type: 'bar', name: 'PAB (Power-Assisted Bicycle)',
+      x: data.amd.years, y: data.amd.pab,
+      marker: { color: '#f0a500' }
+    },
+    {
+      type: 'bar', name: 'PMA (Personal Mobility Aid)',
+      x: data.amd.years, y: data.amd.pma,
+      marker: { color: '#8b5cf6' }
+    },
+    {
+      type: 'scatter', name: 'Total AMD', mode: 'lines+markers',
+      x: data.amd.years, y: data.amd.total_amd,
+      yaxis: 'y2',
+      line: { color: '#e2e8f0', width: 2, dash: 'dot' },
+      marker: { color: '#e2e8f0', size: 7 }
+    }
+  ], {
+    ...base,
+    barmode: 'stack',
+    margin: { t: 10, r: 70, b: 70, l: 55 },
+    yaxis:  { ...base.yaxis, title: 'Incidents', dtick: 5 },
+    yaxis2: {
+      overlaying: 'y', side: 'right',
+      gridcolor: 'transparent', linecolor: '#1e2535',
+      title: 'Total AMD', dtick: 5,
+      tickfont: { color: '#64748b' }
+    }
+  }, cfg);
+
+});
 </script>
 {% endblock %}
