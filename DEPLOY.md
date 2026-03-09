@@ -16,8 +16,8 @@ python app.py
 ### Build & test locally
 ```bash
 docker build -t aidil-portfolio .
-docker run -p 5000:5000 aidil-portfolio
-# Open: http://localhost:5000
+docker run -p 80:80 aidil-portfolio
+# Open: http://localhost
 ```
 
 ### Push to Docker Hub
