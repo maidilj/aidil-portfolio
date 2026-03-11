@@ -2,7 +2,6 @@
 {% block title %}Thermal Simulation Case Study | Aidil{% endblock %}
 
 {% block head %}
-<script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
 <style>
   .case-hero {
     padding: 5rem 4rem 3rem;
@@ -22,6 +21,7 @@
   }
   .case-hero p { color: var(--muted); max-width: 620px; line-height: 1.8; }
 
+  /* Main layout */
   .content-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -29,21 +29,22 @@
     padding: 4rem;
     align-items: start;
   }
-
   .section-block { margin-bottom: 3rem; }
   .section-block h2 {
     font-family: var(--serif);
-    font-size: 1.5rem; font-weight: 400;
-    margin-bottom: 1rem;
+    font-size: 1.5rem; font-weight: 400; margin-bottom: 1rem;
   }
-  .section-block p { color: var(--muted); font-size: 0.9rem; line-height: 1.8; margin-bottom: 0.8rem; }
+  .section-block p {
+    color: var(--muted); font-size: 0.9rem;
+    line-height: 1.8; margin-bottom: 0.8rem;
+  }
 
+  /* Sidebar */
   .sidebar { position: sticky; top: 100px; }
   .sidebar-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    padding: 1.75rem;
-    margin-bottom: 1.5rem;
+    padding: 1.75rem; margin-bottom: 1.5rem;
   }
   .sidebar-card h4 {
     font-family: var(--mono); font-size: 0.65rem;
@@ -53,65 +54,88 @@
   .sidebar-card ul { list-style: none; }
   .sidebar-card ul li {
     font-size: 0.82rem; color: var(--muted);
-    padding: 0.4rem 0;
-    border-bottom: 1px solid var(--border);
+    padding: 0.4rem 0; border-bottom: 1px solid var(--border);
     display: flex; justify-content: space-between;
   }
   .sidebar-card ul li:last-child { border-bottom: none; }
   .sidebar-card ul li span { color: var(--text); font-weight: 500; }
 
   .patent-badge {
-    background: rgba(240,165,0,0.1);
+    background: rgba(240,165,0,0.08);
     border: 1px solid rgba(240,165,0,0.3);
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem; margin-bottom: 1.5rem;
   }
   .patent-badge p {
     font-family: var(--mono); font-size: 0.7rem;
-    color: var(--accent2); letter-spacing: 0.05em;
-    margin: 0;
+    color: var(--accent2); letter-spacing: 0.04em; margin: 0; line-height: 1.7;
   }
   .patent-badge a { color: var(--accent2); }
 
-  .chart-full {
-    background: var(--surface);
+  /* Image figures */
+  .figure {
+    margin: 2rem 0;
     border: 1px solid var(--border);
-    padding: 2rem;
-    margin: 0 4rem 2rem;
+    background: var(--surface);
+    overflow: hidden;
   }
-  .chart-title {
-    font-family: var(--mono); font-size: 0.7rem;
-    color: var(--accent); letter-spacing: 0.15em;
-    text-transform: uppercase; margin-bottom: 1.5rem;
+  .figure img {
+    width: 100%;
+    display: block;
+    background: #fff;
+  }
+  .figure img.dark-bg {
+    background: #f5f5f5;
+  }
+  .figure-caption {
+    padding: 0.85rem 1.2rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+  }
+  .figure-caption strong { color: var(--accent); }
+
+  /* Two-column image row */
+  .figure-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 2rem 0;
   }
 
-  .findings-grid {
+  /* Metrics row */
+  .metrics-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
-    margin: 0 4rem 4rem;
+    margin: 0 4rem 2rem;
   }
-  .finding-card {
-    background: var(--surface);
-    padding: 2rem;
+  .metric-card {
+    background: var(--surface); padding: 2rem; text-align: center;
+    position: relative;
   }
-  .finding-num {
-    font-family: var(--serif);
-    font-size: 2rem; color: var(--accent);
-    margin-bottom: 0.5rem;
+  .metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent);
   }
-  .finding-label {
+  .metric-card:nth-child(2)::before { background: var(--accent2); }
+  .metric-card:nth-child(3)::before { background: #3b82f6; }
+  .metric-num {
+    font-family: var(--serif); font-size: 2.2rem;
+    color: var(--text); margin-bottom: 0.25rem;
+  }
+  .metric-lbl {
     font-family: var(--mono); font-size: 0.65rem;
-    color: var(--muted); letter-spacing: 0.1em;
-    text-transform: uppercase; margin-bottom: 0.75rem;
+    color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
   }
-  .finding-desc { color: var(--muted); font-size: 0.82rem; line-height: 1.6; }
 
+  /* Forensics link */
   .forensics-link {
-    margin: 0 4rem 4rem;
-    padding: 2.5rem;
+    margin: 0 4rem 4rem; padding: 2.5rem;
     background: var(--surface);
     border: 1px solid var(--border);
     border-left: 3px solid var(--accent);
@@ -124,11 +148,12 @@
   .forensics-link p { color: var(--muted); font-size: 0.88rem; line-height: 1.8; }
 
   @media (max-width: 900px) {
+    .case-hero { padding: 4rem 1.5rem 2rem; }
     .content-grid { grid-template-columns: 1fr; gap: 2rem; padding: 2rem 1.5rem; }
     .sidebar { position: static; }
-    .chart-full, .findings-grid, .forensics-link { margin-left: 1.5rem; margin-right: 1.5rem; }
-    .case-hero { padding: 4rem 1.5rem 2rem; }
-    .findings-grid { grid-template-columns: 1fr; }
+    .metrics-row { grid-template-columns: 1fr; margin: 0 1.5rem 2rem; }
+    .forensics-link { margin: 0 1.5rem 3rem; }
+    .figure-row { grid-template-columns: 1fr; }
   }
 </style>
 {% endblock %}
@@ -138,150 +163,219 @@
 <div class="case-hero">
   <a href="/" class="back-link">← Back</a>
   <p class="section-label">Project 02 — Computational Modelling</p>
-  <h1>Thermo-Electric FE<br>Simulation Case Study</h1>
+  <h1>Heat-Channel Embedded<br>Smart Materials: FE Simulation</h1>
   <p>
-    Finite element modelling of heat-enabled composite materials for next-generation
-    flexible electronics. Developed at HP-NTU Corporate Lab, this work contributed
-    to a filed US patent and reduced physical prototype iterations by 30%.
+    Finite element thermal simulation of heat-channel networks embedded within
+    3D-printed thermoplastic composites — developed at HP-NTU Corporate Lab to
+    enable targeted, stimulus-responsive deformation in wearable biomedical devices.
+    Contributed to a filed US patent (US20240109246A1).
   </p>
   <div style="margin-top:1.5rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
-    <span class="tag accent">ABAQUS</span>
+    <span class="tag accent">MATLAB PDE Toolbox</span>
     <span class="tag">FEM</span>
     <span class="tag">Thermal Modelling</span>
+    <span class="tag">Composite Materials</span>
     <span class="tag amber">Patent Filed</span>
-    <span class="tag">MATLAB</span>
   </div>
 </div>
 
 <div class="content-grid">
   <div>
+
     <div class="section-block">
       <h2>Problem Statement</h2>
-      <p>Next-generation flexible electronics require materials that can conduct heat directionally while
-      maintaining mechanical compliance. Designing these thermo-electric composites through physical
-      prototyping alone is slow and cost-prohibitive — each iteration requires fabrication, thermal imaging,
-      and electrical characterisation.</p>
-      <p>The objective was to build a validated finite element model that could predict composite performance
-      before physical build, reducing the design cycle and enabling principled material selection.</p>
+      <p>
+        Wearable biomedical devices such as face masks, elbow patches, and bracelets require
+        materials that can deform precisely on-demand — conforming to the human body at specific
+        joints without bulk heating. Conventional shape-memory polymers apply heat uniformly,
+        which is slow, energy-inefficient, and imprecise.
+      </p>
+      <p>
+        The objective was to design and simulate a heat-channel network embedded within
+        Multi-Jet Fusion (MJF) 3D-printed polyamide composites that could conduct heat
+        <em>selectively</em> to target deformable joint regions — raising them past their
+        glass transition temperature (Tg ≈ 50–60°C) while keeping the surrounding casing
+        safe for skin contact.
+      </p>
     </div>
 
     <div class="section-block">
       <h2>Modelling Approach</h2>
-      <p><strong style="color:var(--text)">Model Architecture:</strong> Coupled thermo-electric FE models were built in ABAQUS using representative
-      volume element (RVE) methodology. The models captured heat flux, electrical conductivity, and
-      interfacial thermal resistance between composite constituents.</p>
-      <p><strong style="color:var(--text)">Boundary Conditions:</strong> Applied current-voltage loads matched experimental set-up configurations
-      from bench-scale IV measurements. Thermal boundary conditions replicated environmental chamber
-      test profiles (−20°C to 80°C operating range).</p>
-      <p><strong style="color:var(--text)">Validation Strategy:</strong> Predicted thermal distributions were validated against IR thermal imaging
-      data captured on fabricated prototypes. Agreement within ±8% was achieved across 30+ composite
-      assemblies.</p>
+      <p>
+        <strong style="color:var(--text)">Geometry &amp; Mesh:</strong> A 2D cross-sectional
+        geometry was constructed representing the composite assembly — comprising the heat channel,
+        joint region, and insulating air channels, sized at approximately 40mm × 10mm. The mesh
+        was built using triangular elements in MATLAB's PDE Toolbox, with refinement concentrated
+        at the material interfaces where heat flux gradients are steepest.
+      </p>
+
+      <!-- Figure 1: FE Mesh -->
+      <div class="figure">
+        <img src="{{ url_for('static', filename='img/fe_mesh.png') }}"
+             alt="Finite element mesh of heat-channel composite assembly"
+             style="max-height: 260px; object-fit: contain; padding: 1rem; background: #fff;">
+        <div class="figure-caption">
+          <strong>Fig. 1</strong> — Triangular FE mesh of the composite cross-section.
+          Red boundaries demarcate material interfaces between heat channel, joint region, and polyamide casing.
+          Mesh nodes: 2,271 · Triangles: 4,336.
+        </div>
+      </div>
+
+      <p>
+        <strong style="color:var(--text)">Material Definition:</strong> Carbon black fusing agent
+        (FA) concentration was the primary variable, tested at 10 wt%, 20 wt%, and 30 wt%.
+        Increasing FA content raises both thermal conductivity and infrared absorptivity of the
+        composite. Boundary conditions applied a 160°C heat source at the channel inlet and a
+        convective coefficient of h = 5 W/m²K at exposed surfaces, simulating still-air conditions
+        on the skin-facing side.
+      </p>
+
+      <p>
+        <strong style="color:var(--text)">Two Heat Transfer Modes Investigated:</strong>
+        The study compared (1) <em>conductive heat transfer</em> through the carbon-doped
+        polyamide matrix, and (2) <em>Joule heating</em> via embedded silver nanowire/nanoparticle
+        networks acting as resistive elements. Joule heating was modelled by varying conductor
+        cross-sectional area and path length to characterise the power-resistance tradeoff.
+      </p>
+    </div>
+
+    <div class="section-block">
+      <h2>Results</h2>
+      <p>
+        The thermal distribution map below shows the steady-state temperature field for the
+        6 wt% carbon composite under conductive heating. The heat front propagates from the
+        left-side source and attenuates sharply at the air channel boundary — confirming
+        the insulation design effectively limits heat leakage to the casing surface.
+        The Tg isotherm (≈40°C shown) is reached approximately 17.5mm from the heat source.
+      </p>
+
+      <!-- Figure 2: Thermal distribution -->
+      <div class="figure">
+        <img src="{{ url_for('static', filename='img/thermal_distribution.png') }}"
+             alt="Thermal distribution map from FE simulation"
+             style="max-height: 320px; object-fit: contain; padding: 0.5rem; background: #f0f0f0;">
+        <div class="figure-caption">
+          <strong>Fig. 2</strong> — Steady-state thermal distribution (T, °C) with heat flux vector field (q).
+          Red = high temperature zone at heat source; blue = ambient. Tg isotherm reached ~17.5mm from source
+          for 6 wt% carbon composite.
+        </div>
+      </div>
+
+      <p>
+        The transient response curves below show joint temperature over time across FA concentrations.
+        At 30 wt% FA, the joint region exceeds Tg (~50°C) within approximately 3 minutes —
+        fast enough for practical actuation. A key finding was that casing temperature rise
+        can outpace joint temperature rise at lower FA concentrations, identifying thermal
+        leakage as the critical failure mode to engineer against.
+      </p>
+
+      <!-- Figure 3: Temperature vs time -->
+      <div class="figure">
+        <img src="{{ url_for('static', filename='img/joint_temp_curves.png') }}"
+             alt="Joint temperature vs time for varying fusing agent concentrations"
+             style="max-height: 320px; object-fit: contain; padding: 1rem; background: #fff;">
+        <div class="figure-caption">
+          <strong>Fig. 3</strong> — Joint region temperature vs. time for 10, 20, and 30 wt% fusing agent.
+          Dashed lines mark the glass transition temperature (~50°C) and the time window for actuation.
+          30 wt% achieves Tg crossover in ~3 minutes.
+        </div>
+      </div>
     </div>
 
     <div class="section-block">
       <h2>Key Findings</h2>
-      <p>The model successfully predicted thermal hotspot locations that corresponded to observed
-      delamination failure modes. This identified interfacial bond strength as the critical design parameter
-      — shifting formulation effort to adhesion chemistry rather than bulk conductivity.</p>
+      <p>
+        Higher fusing agent concentration directly accelerates Tg attainment but also increases
+        thermal leakage risk to the skin-contact surface. This identified FA concentration as
+        a dual-constraint design variable — requiring optimisation against both actuation speed
+        and surface safety simultaneously.
+      </p>
+      <p>
+        Joule heating via silver nanowire networks proved the faster actuation mechanism,
+        with heat delivered at the speed of electrical conduction rather than diffusion.
+        However, the cross-sectional geometry of the conductor introduced competing effects:
+        reducing cross-section increases local resistance and power dissipation but reduces
+        total current draw — a tradeoff requiring parametric optimisation in future work.
+      </p>
+      <p>
+        These simulation-driven findings directly shaped the composite material specifications
+        that were incorporated into the patent filing.
+      </p>
     </div>
+
   </div>
 
+  <!-- Sidebar -->
   <div class="sidebar">
     <div class="patent-badge">
-      <p>📄 Patent Filed<br>
-      <a href="https://patents.google.com/patent/US20240109246A1" target="_blank">US20240109246A1</a><br>
-      Song, J., et al. — Plastically deformable 3D objects with heat channels</p>
+      <p>
+        📄 <strong>Patent Filed</strong><br>
+        <a href="https://patents.google.com/patent/US20240109246A1" target="_blank">US 2024/0109246 A1</a><br>
+        Song et al. — Plastically Deformable 3D Objects with Heat Channels<br>
+        HP Development Co. &amp; NTU · Apr 2024
+      </p>
     </div>
     <div class="sidebar-card">
       <h4>Project Specs</h4>
       <ul>
         <li>Duration <span>18 months</span></li>
-        <li>Prototypes <span>30+</span></li>
-        <li>Iteration reduction <span>30%</span></li>
-        <li>Temp range <span>−20 to 80°C</span></li>
-        <li>Model accuracy <span>±8%</span></li>
+        <li>Institution <span>HP-NTU Lab</span></li>
+        <li>Material <span>Polyamide 12</span></li>
+        <li>Tg target <span>50–60°C</span></li>
+        <li>FA range <span>10–30 wt%</span></li>
+        <li>Mesh elements <span>4,336</span></li>
       </ul>
     </div>
     <div class="sidebar-card">
       <h4>Tools Used</h4>
       <ul>
-        <li>FE Solver <span>ABAQUS</span></li>
-        <li>Post-processing <span>MATLAB</span></li>
-        <li>Thermal imaging <span>FLIR</span></li>
+        <li>FE Solver <span>MATLAB PDE</span></li>
         <li>CAD <span>SolidWorks</span></li>
-        <li>Statistics <span>JMP</span></li>
+        <li>Fabrication <span>HP MJF</span></li>
+        <li>Post-processing <span>MATLAB</span></li>
+        <li>Conductors <span>Ag nanowires</span></li>
+      </ul>
+    </div>
+    <div class="sidebar-card">
+      <h4>Applications Explored</h4>
+      <ul>
+        <li>Face mask frames <span>conforming fit</span></li>
+        <li>Elbow patches <span>joint actuation</span></li>
+        <li>Bracelets <span>wearable electronics</span></li>
       </ul>
     </div>
   </div>
 </div>
 
-<!-- Simulated validation chart -->
-<div class="chart-full">
-  <div class="chart-title">Simulated vs. Experimental Thermal Response — 30 Prototype Assemblies</div>
-  <div id="chart-validation" style="height:320px;"></div>
-</div>
-
-<div class="findings-grid">
-  <div class="finding-card">
-    <div class="finding-num">30%</div>
-    <div class="finding-label">Iteration Reduction</div>
-    <div class="finding-desc">Fewer physical prototypes needed by predicting failure modes in silico before fabrication.</div>
+<!-- Metrics row -->
+<div class="metrics-row">
+  <div class="metric-card">
+    <div class="metric-num">~3 min</div>
+    <div class="metric-lbl">Time to Tg at 30 wt% FA</div>
   </div>
-  <div class="finding-card">
-    <div class="finding-num">±8%</div>
-    <div class="finding-label">Model Accuracy</div>
-    <div class="finding-desc">Thermal distribution predictions validated against IR imaging data across all prototype variants.</div>
+  <div class="metric-card">
+    <div class="metric-num">17.5 mm</div>
+    <div class="metric-lbl">Tg Isotherm Reach from Source</div>
   </div>
-  <div class="finding-card">
-    <div class="finding-num">1</div>
-    <div class="finding-label">Patent Filed</div>
-    <div class="finding-desc">Modelling insights directly contributed to the patented material architecture (US20240109246A1).</div>
+  <div class="metric-card">
+    <div class="metric-num">1</div>
+    <div class="metric-lbl">Patent Filed (US20240109246A1)</div>
   </div>
 </div>
 
 <div class="forensics-link">
   <h3>Relevance to Forensic Fire Science</h3>
   <p>
-    Thermal and thermo-electric FE modelling shares core methodology with computational fire investigation:
-    both require accurate representation of heat transfer, material response under thermal loading, and
-    boundary condition validation against physical measurements. The FMEA-driven approach used here —
-    identifying and isolating failure modes through combined simulation and experiment — directly maps to
-    fire origin and cause analysis, where understanding material ignition thresholds, heat flux pathways,
-    and electrical fault signatures is central to the investigation process.
+    The analytical framework applied here — modelling heat transfer through heterogeneous
+    material systems, identifying failure modes at thermal boundaries, and tracing temperature
+    propagation to its physical cause — is methodologically identical to the process used in
+    fire origin and cause investigation. Whether examining how heat channels through a composite
+    wearable or how thermal energy propagates through a building compartment following ignition,
+    the governing physics are the same: Fourier's law, boundary conditions, material
+    thermal properties, and the critical thresholds at which materials change state.
+    This simulation work built a rigorous, first-principles intuition for thermal behaviour
+    under controlled and uncontrolled conditions — directly applicable to fire forensics.
   </p>
 </div>
 
-<script>
-  const cfg = { responsive: true, displayModeBar: false };
-  const layout = {
-    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
-    font: { family: 'DM Sans, sans-serif', color: '#64748b', size: 11 },
-    margin: { t: 10, r: 20, b: 50, l: 60 },
-    xaxis: { title: 'Prototype Assembly #', gridcolor: '#1e2535', linecolor: '#1e2535' },
-    yaxis: { title: 'Peak Temperature (°C)', gridcolor: '#1e2535', linecolor: '#1e2535' },
-    legend: { orientation: 'h', y: -0.2, font: { color: '#64748b' } }
-  };
-
-  // Reproducible synthetic data
-  const n = 30;
-  const seed = (i) => Math.sin(i * 9301 + 49297) * 0.5 + 0.5;
-  const simulated = Array.from({length: n}, (_,i) => 45 + seed(i*3) * 55);
-  const experimental = simulated.map((v, i) => v * (0.94 + seed(i*7+1) * 0.14));
-  const labels = Array.from({length: n}, (_,i) => i+1);
-
-  Plotly.newPlot('chart-validation', [
-    {
-      x: labels, y: simulated, name: 'FE Model (ABAQUS)',
-      type: 'scatter', mode: 'lines+markers',
-      line: { color: '#e8532a', width: 2 },
-      marker: { size: 5, color: '#e8532a' }
-    },
-    {
-      x: labels, y: experimental, name: 'Experimental (IR Imaging)',
-      type: 'scatter', mode: 'lines+markers',
-      line: { color: '#f0a500', width: 2, dash: 'dot' },
-      marker: { size: 5, color: '#f0a500', symbol: 'diamond' }
-    }
-  ], layout, cfg);
-</script>
 {% endblock %}
